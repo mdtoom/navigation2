@@ -117,13 +117,14 @@ bool BackUp::isCollisionFree(
 {
   // Simulate ahead by simulate_ahead_time_ in cycle_frequency_ increments
   int cycle_count = 0;
-  double sim_position_change;
+  double sim_position_change = 0.0;
+  const double delta_position_change = cmd_vel->linear.x / cycle_frequency_;
   const double diff_dist = abs(command_x_) - distance;
   const int max_cycle_count = static_cast<int>(cycle_frequency_ * simulate_ahead_time_);
 
   while (cycle_count < max_cycle_count) {
-    sim_position_change = cmd_vel->linear.x * (cycle_count / cycle_frequency_);
-    pose2d.x += sim_position_change;
+    sim_position_change += delta_position_change;
+    pose2d.x += delta_position_change;
     cycle_count++;
 
     if (diff_dist - abs(sim_position_change) <= 0.) {
